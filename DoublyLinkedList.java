@@ -16,15 +16,12 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
 	}
     }
     
-    // Dummy header is used.  tail stores reference of tail element of list
-    Entry<T> head, tail;
-    int size;
     
     public DoublyLinkedList() {
+    	super();
         head = new Entry<>(null,null,null);
         
         tail = head;
-        size = 0;
     }
     
     public Iterator<T> iterator() { return new DLLIterator(); }
@@ -32,8 +29,7 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
     protected class DLLIterator extends SLLIterator implements Iterator<T> {
   
     	DLLIterator() {
-    	    super();
-    	    
+    	    super(); 	    
     	    
     	}
 
@@ -54,11 +50,22 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
 
     	// add new elements at middle
     	public void add(Entry<T> ent) {
+    		if(cursor==null) {
+    			// edge case
+    			tail.next =ent;
+    			ent.prev=(Entry<T>) tail;
+    			tail=tail.next;
+    			cursor = tail;
+    	    	size++;
+    		}
+    		else {
+    			
     	    	ent.next = (Entry<T>)cursor;
     	    	ent.prev =  ((Entry<T>)cursor).prev;
     	    	((Entry<T>)cursor).prev.next = ent;
     	    	((Entry<T>)cursor).prev=ent;
     	    	size++;
+    		}
     	}    
     	
     	
@@ -71,12 +78,19 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
     	    if(!ready) {
     		throw new NoSuchElementException();
     	    }
-    	    prev.next = cursor.next;
+    	    
+    	    prev.next = ((Entry<T>)cursor).next;
+    	    if(cursor!=tail) {
+    	    	((Entry<T>)cursor.next).prev= ((Entry<T>)cursor).prev;
+    	    }
     	    // Handle case when tail of a list is deleted
     	    if(cursor == tail) {
-    		tail = (Entry<T>)prev;
-    	    }
+    	    tail = prev;
+    	    } 
+    	    
     	    cursor = prev;
+    	   
+    	   // prev=((Entry<T>)cursor).prev;
     	    ready = false;  // Calling remove again without calling next will result in exception thrown
     	    size--;
     	}
@@ -86,29 +100,10 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
     
     
     public void add(T x) {
-    	add(new Entry<>(x, null,null));
+    	add(new Entry<>(x, null,(Entry <T>)tail));
         }
 
-        public void add(Entry<T> ent) {
-        	System.out.println('a');
-        	ent.prev= tail;
-        	tail.next = ent;
-        	tail = (Entry<T>) tail.next;
-        	size++;
-        }
-    
-    
-    
-   
-        
-        
-        
-        
-        
-        
-        
-        
-    
+
     public static void main(String[] args) throws NoSuchElementException {
         int n = 12;
         if(args.length > 0) {
@@ -128,14 +123,15 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
 	while(in.hasNext()) {
 	    int com = in.nextInt();
 	    switch(com) {
-	    case 1:  // Move to next element and print it
+	    case 1:  // Move to next element and print it and add
 		if (dl.hasNext()) {
 		    System.out.println(dl.next());
 			dl.add(in.nextInt());
 			lst.printList();
 		} else {
-		    break whileloop;
-		};
+		    lst.add(in.nextInt());
+		    dl.next();
+		}
 		break;
 	    case 2:  
 	    	// check has previou
@@ -143,13 +139,26 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
 		dl.remove();
 		lst.printList();
 		break;
+	    case 3:  // Move to next element and print it
+			if (dl.hasNext()) {
+			    System.out.println(dl.next());
+				lst.printList();
+			} else {
+			    break whileloop;
+			}
+			break;
+	    case 4:
+	    	if (dl.hasPrev()) {
+			    System.out.println(dl.prev());
+				lst.printList();
+			} else {
+			    break whileloop;
+			}
+			break;
 	    default:  // Exit loop
 		 break whileloop;
-
 	    }
 	}
-	lst.printList();
-	lst.unzip();
         lst.printList();
         
     }
