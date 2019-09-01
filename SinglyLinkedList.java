@@ -15,8 +15,10 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
     }
 
  */
+//axp170019 - Aarya Vardhan Reddy Paakaala
+//sxs180104 - Shivaprakash Sivagurunathan
 
-package axp170019; 	// change to your netid
+package axp170019;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.NoSuchElementException;
